@@ -1,0 +1,1 @@
+> The attached zipped project is used to generate cv/resume, cover letter and email for job applications. You will start at MANUAL.md to understand the flow, and use it to create the files for this job description below. The only change is that you will not modify the original project, but create the files (.html and .md) directly here on the chat instead of inside the zip:

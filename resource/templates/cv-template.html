@@ -1,0 +1,667 @@
+<!DOCTYPE html>
+<html lang="{{LANG}}">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>{{NAME}} — CV</title>
+<style>
+  /*
+   * Fonts:
+   *  - "Bahnschrift" is a Windows-only variable font. We use "DIN Alternate" on Mac
+   *    and fall back to "Franklin Gothic Medium" / "Arial Narrow" / sans-serif.
+   *    For Playwright/Chromium on Linux we embed a Google Fonts substitute:
+   *    "Barlow Condensed" is the closest free match to Bahnschrift's condensed geometry.
+   *  - "Arial Rounded MT Bold" has no free web equivalent; we use "Nunito" (rounded,
+   *    geometric, friendly) — or the system font if available.
+   *  - Body text: Arial is universal.
+   */
+  @import url('https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@300;400;500;600;700&family=Barlow:wght@300;400;600&family=Nunito:wght@700;800&display=swap');
+
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
+  html {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  /*
+   * ─── TOKEN SYSTEM ──────────────────────────────────────────────────────────────
+   *
+   *  Extracted directly from the Word document's XML:
+   *
+   *  NAME header            Arial, 36pt (sz=72), "RUSSELL" normal / "OJEGUN" bold
+   *  Subtitle (role)        Arial Rounded MT Bold → Nunito ExtraBold, 16pt (sz=32)
+   *  Contact bar            Bahnschrift → Barlow Condensed, 11pt, white on #1a1a1a
+   *  Section headings       Bahnschrift → Barlow Condensed SemiBold, 14pt (sz=28),
+   *                         all-caps, followed by a full-width hairline rule
+   *  Company / job line     Arial Rounded MT Bold → Nunito Bold, 12pt (sz=24)
+   *  Body text              Arial, 12pt (sz=24)
+   *  Bullet text            Bahnschrift Light → Barlow Light, 11.5pt (sz=23)
+   *  Dates                  Bahnschrift Light Italic → Barlow Light Italic, 10pt (sz=20)
+   *  Competency tags        Black (#1a1a1a) fill, white Barlow Condensed text
+   *  Project arrow          ➤ character, bold, same as project title
+   *
+   *  Colors:
+   *    Background:   #ffffff
+   *    Text (main):  #1a1a1a  (document uses pure #000000 for most text)
+   *    Contact bar:  #1a1a1a bg, #ffffff text
+   *    Tag fill:     #1a1a1a, white text
+   *    Rule lines:   #1a1a1a (solid, 0.75pt)
+   *    Links:        underlined, inherit color
+   */
+
+  :root {
+    --black:        #1a1a1a;
+    --white:        #ffffff;
+    --rule:         #1a1a1a;
+    --body-text:    #1a1a1a;
+    --muted:        #444444;
+
+    /* Font families */
+    --f-display:    'Arial', 'Helvetica Neue', sans-serif;
+    --f-condensed:  'Barlow Condensed', 'DIN Alternate', 'Franklin Gothic Medium',
+                    'Arial Narrow', 'Bahnschrift', sans-serif;
+    --f-rounded:    'Nunito', 'Arial Rounded MT Bold', 'Trebuchet MS', sans-serif;
+    --f-body:       'Arial', 'Helvetica Neue', sans-serif;
+    --f-light:      'Barlow', 'Bahnschrift Light', Arial, sans-serif;
+  }
+
+  body {
+    font-family: var(--f-body);
+    font-size: 12pt;
+    line-height: 1.5;
+    color: var(--body-text);
+    background: var(--white);
+    margin: 0;
+    padding: 0;
+  }
+
+  .page {
+    width: 100%;
+    margin: 0 auto;
+    padding: 28px 48px 36px;
+    max-width: {{PAGE_WIDTH}};
+  }
+
+  /* ────────────────────────────────────────────────────
+     HEADER
+  ──────────────────────────────────────────────────── */
+  .header {
+    text-align: right;
+    margin-bottom: 0;
+    padding-bottom: 4px;
+    border-bottom: 1.5px solid var(--rule);
+  }
+
+  .header h1 {
+    font-family: var(--f-display);
+    font-size: 36pt;
+    font-weight: 400;         /* "RUSSELL" is normal weight in the docx */
+    color: var(--black);
+    letter-spacing: 0.02em;
+    line-height: 1.05;
+    margin-bottom: 2px;
+  }
+
+  /* Last name is bold — wrap it in <strong> inside {{NAME}} */
+  .header h1 strong {
+    font-weight: 700;
+  }
+
+  .header-subtitle {
+    font-family: var(--f-rounded);
+    font-size: 16pt;
+    font-weight: 800;
+    color: var(--black);
+    letter-spacing: 0.01em;
+    margin-bottom: 0;
+  }
+
+  /* ────────────────────────────────────────────────────
+     CONTACT BAR  (black band, white text)
+  ──────────────────────────────────────────────────── */
+  .contact-bar {
+    background: var(--black);
+    color: var(--white);
+    padding: 7px 14px;
+    margin-top: 10px;
+    margin-bottom: 16px;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 4px 18px;
+    font-family: var(--f-condensed);
+    font-size: 11pt;
+    font-weight: 400;
+    letter-spacing: 0.01em;
+  }
+
+  .contact-bar a {
+    color: var(--white);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+    white-space: nowrap;
+  }
+
+  /* icon stand-ins */
+  .contact-bar .icon {
+    display: inline-block;
+    margin-right: 3px;
+    font-style: normal;
+  }
+
+  /* ────────────────────────────────────────────────────
+     SECTIONS
+  ──────────────────────────────────────────────────── */
+  .section {
+    margin-bottom: 14px;
+  }
+
+  .section-title {
+    font-family: var(--f-condensed);
+    font-size: 14pt;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    color: var(--black);
+    text-transform: uppercase;
+    /* Rule after the title: thin line extending to the right of the text */
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 8px;
+    white-space: nowrap;
+  }
+
+  .section-title::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--rule);
+    display: block;
+  }
+
+  /* ────────────────────────────────────────────────────
+     PROFESSIONAL SUMMARY
+  ──────────────────────────────────────────────────── */
+  .summary-text {
+    font-family: var(--f-body);
+    font-size: 11.5pt;
+    line-height: 1.6;
+    color: var(--body-text);
+  }
+
+  /* ────────────────────────────────────────────────────
+     CORE COMPETENCIES  (black tag boxes)
+  ──────────────────────────────────────────────────── */
+  .competencies-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 5px;
+  }
+
+  .competency-tag {
+    background: var(--black);
+    color: var(--white);
+    font-family: var(--f-condensed);
+    font-size: 10.5pt;
+    font-weight: 400;
+    padding: 4px 10px 4px 9px;
+    /* no border-radius — the Word doc uses sharp rectangles */
+  }
+
+  /* ────────────────────────────────────────────────────
+     WORK EXPERIENCE
+  ──────────────────────────────────────────────────── */
+  .job {
+    margin-bottom: 12px;
+  }
+
+  /* "Cardmajor – Fullstack developer" line */
+  .job-header-line {
+    display: flex;
+    align-items: baseline;
+    gap: 0;
+    margin-bottom: 0;
+  }
+
+  .job-company {
+    font-family: var(--f-rounded);
+    font-size: 12pt;
+    font-weight: 700;
+    color: var(--black);
+  }
+
+  .job-role {
+    font-family: var(--f-body);
+    font-size: 12pt;
+    font-weight: 400;
+    color: var(--black);
+  }
+
+  /* "Lagos, NG [tab] December 2024 – October 2025" */
+  .job-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    font-family: var(--f-light);
+    font-size: 10pt;
+    font-weight: 300;
+    color: var(--black);
+    margin-top: 1px;
+    margin-bottom: 4px;
+  }
+
+  .job-location {
+    font-style: normal;
+  }
+
+  .job-period {
+    font-style: italic;
+  }
+
+  /* Bullet list — square filled style to match Word's ▪ bullets */
+  .job ul {
+    list-style: none;
+    padding-left: 22px;
+    margin: 0;
+  }
+
+  .job li {
+    font-family: var(--f-light);
+    font-size: 11.5pt;
+    font-weight: 300;
+    line-height: 1.55;
+    color: var(--body-text);
+    margin-bottom: 3px;
+    position: relative;
+  }
+
+  .job li::before {
+    content: '▪';
+    position: absolute;
+    left: -17px;
+    top: 0;
+    font-size: 9pt;
+    line-height: 1.8;
+    color: var(--black);
+  }
+
+  /* ────────────────────────────────────────────────────
+     PROJECTS
+  ──────────────────────────────────────────────────── */
+  .project {
+    margin-bottom: 10px;
+  }
+
+  /* "➤  AuRa Spectrum - Contactless..." bold + badge */
+  .project-title-row {
+    display: flex;
+    align-items: baseline;
+    gap: 4px;
+    margin-bottom: 2px;
+  }
+
+  .project-arrow {
+    font-family: var(--f-body);
+    font-size: 11pt;
+    font-weight: 700;
+    flex-shrink: 0;
+  }
+
+  .project-title {
+    font-family: var(--f-body);
+    font-size: 11.5pt;
+    font-weight: 700;
+    color: var(--black);
+  }
+
+  .project-badge {
+    font-family: var(--f-condensed);
+    font-size: 9.5pt;
+    font-weight: 600;
+    color: var(--black);
+    /* bracket style — matching the docx [Healthtech] notation */
+  }
+
+  .project-desc {
+    font-family: var(--f-light);
+    font-size: 11pt;
+    font-weight: 300;
+    line-height: 1.55;
+    color: var(--body-text);
+    padding-left: 22px;   /* indented under the arrow */
+  }
+
+  .project-tech {
+    font-family: var(--f-light);
+    font-size: 10.5pt;
+    font-weight: 300;
+    color: var(--body-text);
+    padding-left: 22px;
+  }
+
+  /* ────────────────────────────────────────────────────
+     EDUCATION
+  ──────────────────────────────────────────────────── */
+  .edu-item {
+    margin-bottom: 6px;
+  }
+
+  /* "University of Benin | July, 2021" */
+  .edu-header-line {
+    display: flex;
+    align-items: baseline;
+    gap: 4px;
+    font-family: var(--f-condensed);
+    font-size: 12pt;
+    font-weight: 600;
+    color: var(--black);
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+  }
+
+  .edu-pipe {
+    font-weight: 400;
+    font-size: 11pt;
+    color: var(--black);
+  }
+
+  .edu-date {
+    font-family: var(--f-body);
+    font-size: 11pt;
+    font-weight: 400;
+    font-style: italic;
+    letter-spacing: 0;
+    text-transform: none;
+    font-variant: normal;
+  }
+
+  .edu-desc {
+    font-family: var(--f-body);
+    font-size: 11pt;
+    font-weight: 400;
+    color: var(--body-text);
+    padding-left: 22px;
+    margin-top: 1px;
+    line-height: 1.5;
+  }
+
+  /* ────────────────────────────────────────────────────
+     CERTIFICATIONS
+  ──────────────────────────────────────────────────── */
+  .cert-item {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: baseline;
+    gap: 12px;
+    margin-bottom: 5px;
+  }
+
+  .cert-title {
+    font-size: 11pt;
+    font-weight: 400;
+    color: var(--body-text);
+  }
+
+  .cert-org {
+    font-weight: 600;
+  }
+
+  .cert-year {
+    font-size: 10pt;
+    color: var(--muted);
+    white-space: nowrap;
+    font-style: italic;
+    text-align: right;
+  }
+
+  /* ────────────────────────────────────────────────────
+     SKILLS
+  ──────────────────────────────────────────────────── */
+  .skills-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .skill-row {
+    font-size: 11pt;
+    color: var(--body-text);
+    font-family: var(--f-body);
+  }
+
+  .skill-category {
+    font-weight: 700;
+    font-family: var(--f-condensed);
+    font-size: 11pt;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+  }
+
+  /* ────────────────────────────────────────────────────
+     LINKS
+  ──────────────────────────────────────────────────── */
+  a {
+    color: inherit;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+    white-space: nowrap;
+  }
+
+  /* ────────────────────────────────────────────────────
+     PAGE-BREAK CONTROL
+  ──────────────────────────────────────────────────── */
+  .avoid-break,
+  .job,
+  .project,
+  .edu-item,
+  .cert-item {
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+
+  /* ────────────────────────────────────────────────────
+     PRINT
+  ──────────────────────────────────────────────────── */
+  @media print {
+    body {
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
+    }
+
+    .page {
+      padding: 18px 40px 28px;
+    }
+  }
+
+  /* ────────────────────────────────────────────────────
+     RTL (Arabic) support
+  ──────────────────────────────────────────────────── */
+  html[lang="ar"] body {
+    direction: rtl;
+    text-align: right;
+  }
+
+  html[lang="ar"] .header {
+    text-align: left;
+  }
+
+  html[lang="ar"] .section-title::after {
+    order: -1;
+  }
+
+  html[lang="ar"] .job ul {
+    padding-right: 22px;
+    padding-left: 0;
+  }
+
+  html[lang="ar"] .job li::before {
+    right: -17px;
+    left: auto;
+  }
+
+  html[lang="ar"] .competencies-grid {
+    direction: rtl;
+  }
+
+  html[lang="ar"] .contact-bar {
+    direction: rtl;
+    text-align: right;
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <!-- ═══════════════════════════════════════════════
+       HEADER  (right-aligned name, role)
+  ══════════════════════════════════════════════════ -->
+  <div class="header avoid-break">
+    <h1>{{NAME}}</h1>
+    <div class="header-subtitle">{{SUBTITLE}}</div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════
+       CONTACT BAR  (black band)
+  ══════════════════════════════════════════════════ -->
+  <div class="contact-bar">
+    {{CONTACTS}}
+    <!--
+      Populate with items like:
+        <span><span class="icon">✉</span><a href="mailto:{{EMAIL}}">{{EMAIL}}</a></span>
+        <span><span class="icon">🌐</span><a href="{{PORTFOLIO_URL}}">{{PORTFOLIO_DISPLAY}}</a></span>
+        <span><span class="icon">𝕏</span><a href="{{TWITTER_URL}}">{{TWITTER_DISPLAY}}</a></span>
+        <span><span class="icon"></span><a href="{{GITHUB_URL}}">{{GITHUB_DISPLAY}}</a></span>
+        <span>{{LOCATION}}</span>
+    -->
+  </div>
+
+  <!-- ═══════════════════════════════════════════════
+       PROFESSIONAL SUMMARY
+  ══════════════════════════════════════════════════ -->
+  <div class="section avoid-break">
+    <div class="section-title">{{SECTION_SUMMARY}}</div>
+    <div class="summary-text">{{SUMMARY_TEXT}}</div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════
+       CORE COMPETENCIES
+  ══════════════════════════════════════════════════ -->
+  <div class="section avoid-break">
+    <div class="section-title">{{SECTION_COMPETENCIES}}</div>
+    <div class="competencies-grid">
+      {{COMPETENCIES}}
+      <!--
+        Each item:
+          <div class="competency-tag">Full-stack TypeScript (React 18 / NestJS)</div>
+      -->
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════
+       WORK EXPERIENCE
+  ══════════════════════════════════════════════════ -->
+  <div class="section">
+    <div class="section-title">{{SECTION_EXPERIENCE}}</div>
+    {{EXPERIENCE}}
+    <!--
+      Each job:
+        <div class="job">
+          <div class="job-header-line">
+            <span class="job-company">Cardmajor</span>
+            <span class="job-role"> – Fullstack developer</span>
+          </div>
+          <div class="job-meta">
+            <span class="job-location">Lagos, NG</span>
+            <span class="job-period">December 2024 – October 2025</span>
+          </div>
+          <ul>
+            <li>Improved platform security by implementing MFA...</li>
+            <li>Integrated third-party services for gift cards...</li>
+          </ul>
+        </div>
+    -->
+  </div>
+
+  <!-- ═══════════════════════════════════════════════
+       SELECTED PROJECTS
+  ══════════════════════════════════════════════════ -->
+  <div class="section avoid-break">
+    <div class="section-title">{{SECTION_PROJECTS}}</div>
+    {{PROJECTS}}
+    <!--
+      Each project:
+        <div class="project">
+          <div class="project-title-row">
+            <span class="project-arrow">➤</span>
+            <span class="project-title">AuRa Spectrum - Contactless Health-sensing Engines</span>
+            <span class="project-badge"> [Healthtech]</span>
+          </div>
+          <div class="project-desc">
+            Built contactless health-sensing engines... <strong>[Python, TypeScript, Node.js, C++]</strong>
+          </div>
+        </div>
+    -->
+  </div>
+
+  <!-- ═══════════════════════════════════════════════
+       EDUCATION / CERTIFICATES
+  ══════════════════════════════════════════════════ -->
+  <div class="section avoid-break">
+    <div class="section-title">{{SECTION_EDUCATION}}</div>
+    {{EDUCATION}}
+    <!--
+      Each item:
+        <div class="edu-item">
+          <div class="edu-header-line">
+            <span class="edu-org">University of Benin</span>
+            <span class="edu-pipe"> | </span>
+            <span class="edu-date">July, 2021</span>
+          </div>
+          <div class="edu-desc">Bachelors in Computer Engineering (B.Eng)</div>
+        </div>
+    -->
+  </div>
+
+  <!-- ═══════════════════════════════════════════════
+       CERTIFICATIONS  (if separate from education)
+  ══════════════════════════════════════════════════ -->
+  {{#if SECTION_CERTIFICATIONS}}
+  <div class="section avoid-break">
+    <div class="section-title">{{SECTION_CERTIFICATIONS}}</div>
+    {{CERTIFICATIONS}}
+    <!--
+      Each item:
+        <div class="cert-item">
+          <span class="cert-title"><span class="cert-org">AWS</span> – Solutions Architect Associate</span>
+          <span class="cert-year">2024</span>
+        </div>
+    -->
+  </div>
+  {{/if}}
+
+  <!-- ═══════════════════════════════════════════════
+       SKILLS
+  ══════════════════════════════════════════════════ -->
+  {{#if SECTION_SKILLS}}
+  <div class="section avoid-break">
+    <div class="section-title">{{SECTION_SKILLS}}</div>
+    <div class="skills-grid">
+      {{SKILLS}}
+      <!--
+        Each row:
+          <div class="skill-row">
+            <span class="skill-category">Frontend:</span> React 18, Next.js, TypeScript, Tailwind CSS
+          </div>
+      -->
+    </div>
+  </div>
+  {{/if}}
+
+</div>
+</body>
+</html>

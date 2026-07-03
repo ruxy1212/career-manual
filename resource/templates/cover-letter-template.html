@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="{{LANG}}">
+<head>
+<meta charset="UTF-8">
+<title>Cover Letter — {{NAME}}</title>
+<style>
+  /*
+   * Font system matches the CV template:
+   *  - Name / headings:   Arial (matches CV's name treatment)
+   *  - Role title:        Nunito ExtraBold (substitute for Arial Rounded MT Bold)
+   *  - Meta / dateline:   Barlow Condensed (substitute for Bahnschrift)
+   *  - Body text:         Barlow Light (substitute for Bahnschrift Light)
+   *
+   * No section rules or black tag boxes here — a cover letter is one
+   * continuous voice, not a sectioned reference document. Restraint
+   * comes from matching the type system only, not the CV's structure.
+   */
+  @import url('https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;500;600&family=Barlow:wght@300;400&family=Nunito:wght@700;800&display=swap');
+
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
+  html {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  :root {
+    --black:      #1a1a1a;
+    --muted:      #555555;
+    --faint:      #888888;
+    --rule:       #cccccc;
+
+    --f-display:  'Arial', 'Helvetica Neue', sans-serif;
+    --f-rounded:  'Nunito', 'Arial Rounded MT Bold', 'Trebuchet MS', sans-serif;
+    --f-condensed:'Barlow Condensed', 'Bahnschrift', 'Arial Narrow', sans-serif;
+    --f-light:    'Barlow', 'Bahnschrift Light', Arial, sans-serif;
+    --f-body:     'Arial', 'Helvetica Neue', sans-serif;
+  }
+
+  body {
+    font-family: var(--f-body);
+    font-size: 11pt;
+    line-height: 1.5;
+    color: var(--black);
+    background: #ffffff;
+    padding: 26px 48px 32px;
+  }
+
+  /* ── HEADER ─────────────────────────────────────── */
+  .name {
+    font-family: var(--f-display);
+    font-weight: 700;
+    font-size: 17pt;
+    letter-spacing: 0.01em;
+    margin-bottom: 3pt;
+  }
+
+  .contact {
+    font-family: var(--f-condensed);
+    font-size: 10pt;
+    font-weight: 400;
+    color: var(--muted);
+    line-height: 1.4;
+    margin-bottom: 2pt;
+  }
+
+  .credentials {
+    font-family: var(--f-condensed);
+    font-size: 10pt;
+    font-weight: 400;
+    color: var(--muted);
+    line-height: 1.4;
+    margin-bottom: 2pt;
+  }
+
+  .contact a, .credentials a, .footnotes a {
+    color: var(--black);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+
+  .divider {
+    border: none;
+    border-top: 1px solid var(--black);
+    margin: 10pt 0 12pt;
+  }
+
+  /* ── ROLE / DATE ────────────────────────────────── */
+  .role-title {
+    font-family: var(--f-rounded);
+    font-weight: 800;
+    font-size: 13pt;
+    color: var(--black);
+    margin-top: 4pt;
+    margin-bottom: 2pt;
+  }
+
+  .dateline {
+    font-family: var(--f-condensed);
+    font-size: 10pt;
+    font-weight: 400;
+    font-style: italic;
+    color: var(--muted);
+    margin-bottom: 14pt;
+  }
+
+  /* ── BODY COPY ──────────────────────────────────── */
+  p {
+    font-family: var(--f-light);
+    font-size: 11pt;
+    font-weight: 300;
+    line-height: 1.6;
+    color: var(--black);
+    margin-bottom: 9pt;
+  }
+
+  .achievements {
+    list-style: none;
+    margin-bottom: 6pt;
+    padding-left: 0;
+  }
+
+  .achievements li {
+    font-family: var(--f-light);
+    font-size: 11pt;
+    font-weight: 300;
+    line-height: 1.55;
+    color: var(--black);
+    margin-bottom: 6pt;
+    padding-left: 16pt;
+    position: relative;
+  }
+
+  /* Square bullet, matching the CV's ▪ marker */
+  .achievements li::before {
+    content: '▪';
+    position: absolute;
+    left: 0;
+    top: 0;
+    font-size: 8pt;
+    line-height: 1.9;
+    color: var(--black);
+  }
+
+  .language-closing {
+    font-family: var(--f-light);
+    font-weight: 300;
+    font-style: italic;
+    font-size: 11pt;
+    color: var(--muted);
+    margin-top: 4pt;
+    margin-bottom: 8pt;
+  }
+
+  /* ── FOOTNOTES ──────────────────────────────────── */
+  .footnotes {
+    margin-top: 12pt;
+    padding-top: 6pt;
+    border-top: 1px solid var(--rule);
+  }
+
+  .footnotes p {
+    font-family: var(--f-condensed);
+    font-size: 8.5pt;
+    font-weight: 400;
+    color: var(--faint);
+    line-height: 1.4;
+    margin-bottom: 3pt;
+  }
+
+  /* ── RTL (Arabic) support ───────────────────────── */
+  html[lang="ar"] body {
+    direction: rtl;
+    text-align: right;
+  }
+
+  html[lang="ar"] .achievements li {
+    padding-left: 0;
+    padding-right: 16pt;
+  }
+
+  html[lang="ar"] .achievements li::before {
+    left: auto;
+    right: 0;
+  }
+</style>
+</head>
+<body>
+  <div class="name">{{NAME}}</div>
+  <div class="contact">{{CONTACT_LINE}}</div>
+  {{CREDENTIALS_BLOCK}}
+  <hr class="divider">
+
+  <div class="role-title">Cover Letter: {{ROLE_TITLE}}</div>
+  <div class="dateline">{{DATELINE}}</div>
+
+  <p>{{OPENING}}</p>
+  <p>{{PROFILE_INTRO}}</p>
+
+  {{ACHIEVEMENTS_BLOCK}}
+
+  {{PROBLEMS_BLOCK}}
+  {{CLOSING_BLOCK}}
+  {{LANGUAGE_CLOSING_BLOCK}}
+  {{FOOTNOTES_BLOCK}}
+</body>
+</html>
