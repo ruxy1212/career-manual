@@ -7,7 +7,7 @@ set ZIP=manual.zip
 if exist "%ZIP%" del "%ZIP%"
 
 :: Create new archive
-powershell -NoProfile -Command ^
+pwsh -NoProfile -Command ^
 "Compress-Archive -Path 'resource','MANUAL.md' -DestinationPath '%ZIP%'"
 
 echo.
