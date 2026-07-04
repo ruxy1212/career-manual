@@ -2,5 +2,6 @@
 manual/
 output/
 node_modules/
-cv.md
-profile.yml
+
+resource/data/cv.md
+resource/config/profile.yml
