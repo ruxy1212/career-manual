@@ -1,1 +1,4 @@
 *.zip
+manual/
+output/
+node_modules/

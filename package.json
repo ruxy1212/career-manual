@@ -1,0 +1,26 @@
+{
+  "name": "career-manual",
+  "version": "1.10.0",
+  "description": "Manual for career operations, job search, and automation using AI tools.",
+  "private": true,
+  "scripts": {
+    "pdf": "node generate-pdf.mjs"
+  },
+  "keywords": [
+    "ai",
+    "job-search",
+    "career",
+    "automation"
+  ],
+  "author": "Russell Oje <info@ruxy.tech> (https://portfolio.ruxy.tech)",
+  "homepage": "https://portfolio.ruxy.tech",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ruxy1212/career-manual"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "js-yaml": "^4.1.1",
+    "playwright": "1.58.1"
+  }
+}
