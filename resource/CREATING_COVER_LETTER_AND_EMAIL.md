@@ -274,6 +274,11 @@ Never invent metrics.
 
 If numbers don't exist, describe concrete outcomes.
 
+### Sourcing Authentic Evidence from `/insights/`:
+Never recycle the same generic 2-3 superficial bullet points across cover letters or emails. When referencing projects or past experience, ALWAYS consult the corresponding project intelligence in `/insights/{project-slug}.md` (e.g. `cardmajor.md`, `edulaw.md`, `musicstory.md`, `snipfair.md`, `trust-ledger.md`, `aura-spectrum.md`, `oja-link.md`, etc.):
+- Extract specific architectural challenges, verified scale indicators (e.g., 739 routes, polyglot MySQL/MongoDB persistence, multi-chain crypto payment flows, client-side TensorFlow.js scoring), and real solutions implemented.
+- Connect the hiring company's likely pain point directly to an authentic, documented engineering outcome from the insight breakdown.
+
 ---
 
 # 6. Explain How You Think

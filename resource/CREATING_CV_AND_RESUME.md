@@ -176,6 +176,27 @@ Better than inventing:
 
 ---
 
+# Deep Project Intelligence & Authentic Metrics: /insights/
+
+When tailoring a CV/Resume for a specific job, NEVER recycle the same 3 generic summary bullets or invent artificial numbers.
+
+Instead, after selecting the top relevant projects or roles from `cv.md`, you MUST read the corresponding project file in the `/insights/` directory:
+- `insights/{project-slug}.md` (e.g. `cardmajor.md`, `edulaw.md`, `musicstory.md`, `aura-spectrum.md`, `snipfair.md`, `trust-ledger.md`, `oja-link.md`, `demosaic-homes.md`, `animated-kangaroo.md`, `link-sharing.md`).
+
+Each insight file contains verified, deep technical intelligence:
+- **Architectural workflows:** Real polyglot persistence, failover mechanisms, queuing systems, and authentication flows.
+- **Concrete engineering metrics:** Actual commit volume, route count, Eloquent model count, API endpoints, and database migrations.
+- **Specific libraries & packages:** Exact SDKs, libraries, and frameworks used in production.
+- **Technical trade-offs & bottlenecks:** Real problems faced and solved.
+
+### The Rule for CV Customization:
+1. Identify the target role's core technical priorities from the JD (e.g. distributed transactions, security/auth, audio/video streaming, client-side ML, or high-concurrency APIs).
+2. Read the relevant `/insights/{project-slug}.md` files.
+3. Select and highlight the specific metrics, subsystems, and architectural decisions from the insights that directly match what the hiring team is buying.
+4. Keep the bullet points fresh, distinctive, and strictly grounded in real technical truth.
+
+---
+
 # Show Progression
 
 The CV should communicate growth over time.

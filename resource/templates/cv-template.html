@@ -513,6 +513,14 @@
     text-align: right;
   }
 </style>
+<style>
+  .contact-bar span {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+</style>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 </head>
 <body>
 <div class="page">
@@ -531,11 +539,11 @@
   <div class="contact-bar">
     {{CONTACTS}}
     <!--
-      Populate with items like:
-        <span><span class="icon">✉</span><a href="mailto:{{EMAIL}}">{{EMAIL}}</a></span>
-        <span><span class="icon">🌐</span><a href="{{PORTFOLIO_URL}}">{{PORTFOLIO_DISPLAY}}</a></span>
-        <span><span class="icon">𝕏</span><a href="{{TWITTER_URL}}">{{TWITTER_DISPLAY}}</a></span>
-        <span><span class="icon"></span><a href="{{GITHUB_URL}}">{{GITHUB_DISPLAY}}</a></span>
+      Populate with items (with their font-awesome social icons) like:
+        <span><i class="fa-regular fa-envelope"></i> <a href="mailto:{{EMAIL}}">{{EMAIL}}</a></span>
+        <span><i class="fa-solid fa-globe"></i> <a href="{{PORTFOLIO_URL}}">{{PORTFOLIO_DISPLAY}}</a></span>
+        <span><i class="fa-brands fa-twitter"></i> <a href="{{TWITTER_URL}}">{{TWITTER_DISPLAY}}</a></span>
+        <span><i class="fa-brands fa-github"></i> <a href="{{GITHUB_URL}}">{{GITHUB_DISPLAY}}</a></span>
         <span>{{LOCATION}}</span>
     -->
   </div>
