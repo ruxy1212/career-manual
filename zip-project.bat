@@ -8,7 +8,7 @@ if exist "%ZIP%" del "%ZIP%"
 
 :: Create new archive
 pwsh -NoProfile -Command ^
-"Compress-Archive -Path 'resource','MANUAL.md' -DestinationPath '%ZIP%'"
+"Compress-Archive -Path 'resource','AGENTS.md' -DestinationPath '%ZIP%'"
 
 echo.
 echo Archive created: %ZIP%

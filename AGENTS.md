@@ -388,4 +388,4 @@ Read this file and execute each step in order, providing the JD as input. No sla
 
 Example prompt:
 
-> Read MANUAL.md and perform the manual application flow for this JD: {url or pasted text}
+> Read AGENTS.md and perform the manual application flow for this JD: {url or pasted text}

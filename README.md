@@ -30,7 +30,7 @@ This is intentionally a lighter workflow than the full `career-ops` project. It 
 2. Install dependencies with your package manager of choice if needed - `pnpm install`.
 3. Copy `resource/config/profile.example.yml` to `resource/config/profile.yml` and fill in your own details.
 4. Copy `resource/data/cv.example.md` to `resource/data/cv.md` and fill it so it reflects your real experience.
-5. Read `MANUAL.md` to understand the manual application flow and what files are expected.
+5. Read `AGENTS.md` to understand the manual application flow and what files are expected.
 
 ## How the manual workflow works
 
@@ -51,7 +51,7 @@ From the project root, run:
 zip-project.bat
 ```
 
-This creates `manual.zip` in the root of the repository. The archive includes the `resource` folder and `MANUAL.md`, which are the core inputs needed for the manual generation flow.
+This creates `manual.zip` in the root of the repository. The archive includes the `resource` folder and `AGENTS.md`, which are the core inputs needed for the manual generation flow.
 
 ## Generating PDFs locally
 
