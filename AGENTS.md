@@ -1,6 +1,21 @@
 # Manual Application Flow
 
-> **Purpose:** Generate a tailored CV (HTML), cover letter (HTML), and email (Markdown) for a single job application -- without running any scripts, updating the pipeline, or performing any tracking. The user runs `/resource/scripts/generate-pdf.mjs` manually afterwards.
+> **Purpose:** Generate tailored job application assets -- CV (HTML), cover letter (HTML or JSON payload), and email (Markdown) -- for a single job application without running any scripts, updating the pipeline, or performing any tracking. The user runs `/resource/scripts/generate-pdf.mjs` manually afterwards.
+
+---
+
+## CRITICAL: Scope Determination & Selective Generation
+
+> [!IMPORTANT]
+> **READ THIS BEFORE EXECUTING ANY STEPS:**
+>
+> 1. **Check User Intent First:** Examine the user prompt for asset restrictions before doing anything else.
+> 2. **Selective Generation:** When the user asks for specific assets (e.g. *"create email and cv.html"*, *"only resume"*, *"cover letter only"*), **ONLY generate the requested assets**. Do NOT auto-generate unrequested files.
+> 3. **Full Flow (Default):** ONLY generate all three assets (CV, Cover Letter, Email) when **NO** asset restriction is given in the prompt (e.g. *"Apply to this JD"* or *"Perform manual application flow for this JD"*).
+> 4. **Cover Letter Format Rule (Never Generate Both):**
+>    - Generate **EITHER** HTML (`manual/{company-slug}-{role-slug}-cover.html`) **OR** JSON payload (`manual/{company-slug}-{role-slug}-cover-payload.json`).
+>    - **NEVER generate both HTML and JSON payload in the same run.**
+>    - Generate JSON payload **only** if the user explicitly asks for JSON payload. Otherwise, generate HTML.
 
 ---
 
@@ -34,7 +49,7 @@ Read all of these. They are the canonical sources of truth.
 | `resource/CREATING_CV_AND_RESUME.md` | **Mandatory CV writing guidelines** -- read fully before generating CV HTML |
 | `resource/CREATING_COVER_LETTER_AND_EMAIL.md` | **Mandatory email writing guidelines** -- read fully before drafting email |
 | `resource/templates/cv-template.html` | HTML template for the CV -- replace `{{PLACEHOLDERS}}` |
-| `resource/templates/cover-letter-template.html` | HTML template for the cover letter -- filled via JSON payload |
+| `resource/templates/cover-letter-template.html` | HTML template for the cover letter -- filled via template tokens |
 
 ---
 
@@ -90,7 +105,9 @@ Use the detected archetype to:
 
 ---
 
-## Step 3 -- Generate the CV HTML
+## Step 3 -- Generate the CV HTML (Execute ONLY if requested or in full flow)
+
+*Skip this step if the user requested only other assets (e.g. "email only" or "cover letter only").*
 
 ### 3.1 Read CV guidelines
 
@@ -165,7 +182,15 @@ Example: `manual/cv-john-doe-acme-corp.html`
 
 ---
 
-## Step 4 -- Generate the cover letter HTML
+## Step 4 -- Generate Cover Letter (Execute ONLY if requested or in full flow)
+
+*Skip this step if the user requested only other assets (e.g. "email and cv only" or "resume only").*
+
+> [!WARNING]
+> **FORMAT MUTUAL EXCLUSIVITY RULE:**
+> Generate **EITHER** HTML **OR** JSON payload, **NEVER BOTH**:
+> - If user explicitly asks for JSON: Generate JSON payload only (Step 4.4).
+> - Otherwise (default for cover letter): Generate HTML only (Step 4.5).
 
 ### 4.1 Read cover letter guidelines
 
@@ -219,9 +244,9 @@ End with value: what does hiring me give the team?
 - Mirror JD vocabulary, but never sacrifice clarity for keyword density
 - No sentence that could appear unchanged in a letter for a different company
 
-### 4.4 Assemble the JSON payload
+### 4.4 Option A: Write Cover Letter JSON Payload (ONLY if JSON explicitly requested)
 
-Build the cover letter payload and save to `manual/{company-slug}-{role-slug}-cover-payload.json`:
+If JSON format is requested, save to `manual/{company-slug}-{role-slug}-cover-payload.json`:
 
 ```json
 {
@@ -255,9 +280,9 @@ Build the cover letter payload and save to `manual/{company-slug}-{role-slug}-co
 }
 ```
 
-### 4.5 Write the cover letter HTML
+### 4.5 Option B: Write Cover Letter HTML (Default when cover letter is requested)
 
-Render `templates/cover-letter-template.html` by substituting the payload values into the template tokens (same substitution logic as `generate-cover-letter.mjs`). Save to:
+Render `templates/cover-letter-template.html` with candidate info, dateline, opening, profile intro, achievement bullets, problems section, and closing. Save to:
 
 ```
 manual/{company-slug}-{role-slug}-cover.html
@@ -267,7 +292,9 @@ Example: `manual/acme-corp-senior-ai-engineer-cover.html`
 
 ---
 
-## Step 5 -- Generate the application email (Markdown)
+## Step 5 -- Generate the Application Email (Execute ONLY if requested or in full flow)
+
+*Skip this step if the user requested only other assets (e.g. "cv only" or "cover letter only").*
 
 ### 5.1 Read email guidelines
 
@@ -284,7 +311,7 @@ Follow the structure from `resource/CREATING_COVER_LETTER_AND_EMAIL.md`:
 5. **Evidence** -- 1-2 concrete achievements with outcomes (draw from the same bullets selected in Step 4.2)
 6. **How I think** -- one short paragraph on engineering/AI philosophy relevant to this role
 7. **Technologies** -- mentioned naturally, only those relevant to this role
-8. **Attachments mention** -- explicitly reference CV and cover letter
+8. **Attachments mention** -- explicitly reference attachments generated for this application
 9. **Closing** -- end with value, not gratitude
 
 ### 5.3 Write the email file
@@ -304,35 +331,32 @@ Save to `manual/{company-slug}-{role-slug}-email.md` with this format:
 ---
 
 **Attachments:**
-- CV: manual/cv-{candidate-slug}-{company-slug}.html
-- Cover letter: manual/{company-slug}-{role-slug}-cover.html
+- {List only the files actually generated in this run}
 ```
 
 ---
 
 ## Step 6 -- Summary output to the user
 
-After all three files are written, display this summary:
+After the requested files are written, display this summary (only listing the files that were actually generated):
 
 ```
 Manual Application Files -- {company} | {role_title}
 ======================================================
 
+[Include only the generated files]:
 CV HTML:
   manual/cv-{candidate-slug}-{company-slug}.html
 
-Cover Letter HTML:
-  manual/{company-slug}-{role-slug}-cover.html
-
-Cover Letter Payload:
-  manual/{company-slug}-{role-slug}-cover-payload.json
+Cover Letter:
+  manual/{company-slug}-{role-slug}-cover.html (or payload.json)
 
 Email:
   manual/{company-slug}-{role-slug}-email.md
 
 ------------------------------------------------------
 
-To generate PDFs, run:
+To generate PDFs (for generated HTML/JSON):
 
   node resource/scripts/generate-pdf.mjs \
     manual/cv-{candidate-slug}-{company-slug}.html \
@@ -357,6 +381,7 @@ Paper format: {a4 | letter}
 
 ## Quality rules (applied throughout)
 
+- **Strict Scope Adherence:** Never generate unrequested assets. When asked for CV and email only, generate ONLY those two files.
 - **Never invent experience, metrics, or skills.** Read `cv.md` and `article-digest.md`. Use exact wording.
 - **Never modify `cv.md`** or any source file.
 - **Active voice only.** Passive constructions must be rewritten.
@@ -365,7 +390,6 @@ Paper format: {a4 | letter}
 - **ATS normalization.** `generate-pdf.mjs` handles this at render time, but avoid generating these characters in the first place.
 - **Mirror JD vocabulary** around real cv.md achievements -- never use JD language to fabricate new claims.
 - **Self-check:** Before finalizing each file, re-read every sentence. If it could appear in any application for any company, rewrite it.
-- **ONLY GENERATE ALL FILES WHEN NO EXTRA INSTRUCTION IS GIVEN APART FROM JOB DESCRIPTION. WHEN ASKED FOR ONLY RESUME OR ONLY EMAIL, ONLY PROVIDE THAT, DO NOT AUTO GENERATE ALL FILES EVEN WHEN THE REQUIREMENT IS GIVEN.**
 
 ---
 
@@ -375,18 +399,14 @@ All output goes inside `/manual/`. Never write to `resource/`, `output/`, or any
 
 ```
 manual/
-+-- cv-{candidate-slug}-{company-slug}.html
-+-- {company-slug}-{role-slug}-cover.html
-+-- {company-slug}-{role-slug}-cover-payload.json
-+-- {company-slug}-{role-slug}-email.md
++-- cv-{candidate-slug}-{company-slug}.html            (if CV requested)
++-- {company-slug}-{role-slug}-cover.html             (if Cover Letter HTML requested)
++-- {company-slug}-{role-slug}-cover-payload.json     (ONLY if JSON payload requested)
++-- {company-slug}-{role-slug}-email.md               (if Email requested)
 ```
 
 ---
 
 ## Triggering this flow
 
-Read this file and execute each step in order, providing the JD as input. No slash commands, no scripts, no pipeline updates required.
-
-Example prompt:
-
-> Read AGENTS.md and perform the manual application flow for this JD: {url or pasted text}
+Read this file and execute each step in order, providing the JD as input. Respect any asset constraints specified in the prompt.
