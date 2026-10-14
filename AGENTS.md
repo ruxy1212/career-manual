@@ -365,6 +365,7 @@ Paper format: {a4 | letter}
 - **ATS normalization.** `generate-pdf.mjs` handles this at render time, but avoid generating these characters in the first place.
 - **Mirror JD vocabulary** around real cv.md achievements -- never use JD language to fabricate new claims.
 - **Self-check:** Before finalizing each file, re-read every sentence. If it could appear in any application for any company, rewrite it.
+- **ONLY GENERATE ALL FILES WHEN NO EXTRA INSTRUCTION IS GIVEN APART FROM JOB DESCRIPTION. WHEN ASKED FOR ONLY RESUME OR ONLY EMAIL, ONLY PROVIDE THAT, DO NOT AUTO GENERATE ALL FILES EVEN WHEN THE REQUIREMENT IS GIVEN.**
 
 ---
 
