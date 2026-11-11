@@ -72,7 +72,7 @@ node resource/scripts/generate-cover-letter.mjs --payload manual/{company-slug}-
 Cover letter PDF from HTML:
 
 ```bash
-node resource/scripts/generate-pdf.mjs manual/{company-slug}-{role-slug}-cover.html output/{company-slug}-{role-slug}-cover.pdf --format=a4
+node resource/scripts/generate-pdf.mjs manual/{company-slug}-{role-slug}-cover.html output/{company-slug}-{role-slug}-cover.pdf --format={a4|letter}
 ```
 
 ## Typical file flow
